@@ -43,7 +43,12 @@ app.get('/products', async (req, res) => {
 
 app.get('/products/:id', async (req, res) => {
     try{
+        let key = req.url;
+        let value = cache[key];
+        if (value) 
+            return res.json(value);
         let products = await readFileWithDelay();
+        cache[key] = products;
         let product = products.find(p => p.id === parseInt(req.params.id))
         if(product){
             res.json(product)
